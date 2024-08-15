@@ -18,8 +18,8 @@ class Women(models.Model):
     tags = models.ManyToManyField("TagPost", blank=True, related_name="tags", verbose_name="Теги")
     husband = models.OneToOneField("Husband", on_delete=models.SET_NULL, null=True, blank=True, related_name="woman", verbose_name="Текущий муж")
 
-    published = PublishedManager()
     objects = models.Manager()
+    published = PublishedManager()
 
     class Meta:
         verbose_name = "известных женщин"
