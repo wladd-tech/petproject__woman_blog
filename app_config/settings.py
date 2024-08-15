@@ -19,21 +19,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
+# Django-toolbar working IP-adresses
+INTERNAL_IPS = ["127.0.0.1"]
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Django Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
+    # My Apps
     'women.apps.WomenConfig',
+    # Extensions
+    "debug_toolbar",
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
+    # Django middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -41,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Extensions
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'app_config.urls'
