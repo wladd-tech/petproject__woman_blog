@@ -10,6 +10,7 @@ urlpatterns = [
 ] + debug_toolbar_urls()
 
 
+
 handler404 = page_not_found
 
 
