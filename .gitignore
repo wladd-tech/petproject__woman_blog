@@ -164,3 +164,8 @@ node_modules
 
 # Cache by Django-compressor
 static/cache
+
+# Upload files directories
+uploads/*
+uploads_model/*
+media/*

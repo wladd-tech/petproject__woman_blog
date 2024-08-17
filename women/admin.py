@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.utils.safestring import mark_safe
 from .models import Women, Husband, Category
 
 
@@ -24,7 +25,11 @@ class MarriedFilter(admin.SimpleListFilter):
 
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
-    list_display = ("title", "time_create", "is_published", 'cat', 'brief_info',)
+    fields = ['title', 'slug', 'content', 'photo', 'post_photo', 'cat', 'husband', 'tags']
+    prepopulated_fields = {'slug': ("title",)}
+    readonly_fields = ['post_photo']
+    filter_horizontal = ['tags']
+    list_display = ("title", 'post_photo', "time_create", "is_published", 'cat')
     list_display_links = ("title",)
     ordering = ["time_create", "title"]
     list_editable = ('is_published',)
@@ -33,10 +38,14 @@ class WomenAdmin(admin.ModelAdmin):
     search_fields = ['title', 'cat__name']
     list_filter = [MarriedFilter, 'cat__name', 'is_published']
 
-    @admin.display(description='Кол-во символов')
-    def brief_info(self, women: Women):
-        return f'{len(women.content)} символов'
-    
+
+    @admin.display(description='Текущее фото')
+    def post_photo(self, women: Women):
+        if women.photo:
+            return mark_safe(f"<img src='{women.photo.url}' width=70>")
+        return "Без фото"
+
+
     @admin.action(description='Опубликовать посты')
     def set_published(self, request, queryset):
         count = queryset.update(is_published=1)

@@ -3,7 +3,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 
-from .models import Category, TagPost, Women
+from .forms import AddPostForm, UploadFileForm
+from .models import Category, TagPost, UploadFiles, Women
 
 menu = [
     {"title": "О сайте", "url_name": "about"},
@@ -15,7 +16,7 @@ menu = [
 
 def index(request):
 
-    posts = Women.published.all().select_related('cat')
+    posts = Women.published.all().select_related("cat")
 
     data = {
         "title": "Главная страница",
@@ -27,10 +28,20 @@ def index(request):
 
 
 def about(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            fp = UploadFiles(file=form.cleaned_data["file"])
+            fp.save()
+    else:
+        form = UploadFileForm()
+
     data = {
-        "title": "О сайте",
+        "title": "Страница загрузок",
         "menu": menu,
+        "form": form,
     }
+
     return render(request, "women/about.html", data)
 
 
@@ -48,7 +59,18 @@ def show_post(request, post_slug):
 
 
 def addpage(request):
-    return HttpResponse("Добавление статьи")
+
+    if request.method == "POST":
+        form = AddPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+    else:
+        form = AddPostForm()
+
+    data = {"menu": menu, "title": "Добавление статьи", "form": form}
+
+    return render(request, "women/addpage.html", data)
 
 
 def contact(request):
@@ -61,7 +83,7 @@ def login(request):
 
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
-    posts = Women.published.filter(cat_id=category.pk).select_related('cat')
+    posts = Women.published.filter(cat_id=category.pk).select_related("cat")
     data = {
         "title": f"Рубрика: {category.name}",
         "menu": menu,
@@ -73,7 +95,7 @@ def show_category(request, cat_slug):
 
 def show_tag_postlist(request, tag_slug):
     tag = get_object_or_404(TagPost, slug=tag_slug)
-    posts = tag.tags.filter(is_published=1).select_related('cat')
+    posts = tag.tags.filter(is_published=1).select_related("cat")
 
     data = {
         "title": f"Тег: {tag.tag}",
