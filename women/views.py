@@ -3,13 +3,8 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-)
+from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView,)
+from django.core.paginator import Paginator
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Category, TagPost, UploadFiles, Women
@@ -17,20 +12,29 @@ from .utils import DataMixin
 
 
 def about(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            fp = UploadFiles(file=form.cleaned_data["file"])
-            fp.save()
-    else:
-        form = UploadFileForm()
+    contact_list = Women.published.all()
+    paginator = Paginator(contact_list, 3)
 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+   
     data = {
-        "title": "Страница загрузок",
-        # "menu": menu,
-        "form": form,
+        "title": "О сайте",
+        "page_obj": page_obj,
     }
     return render(request, "women/about.html", data)
+
+
+def contact(request):
+    return HttpResponse("Контакты")
+
+
+def login(request):
+    return HttpResponse("Авторизация")
+
+
+def page_not_found(request, exception):
+    return HttpResponseNotFound("Страница не найдена")
 
 
 class AddPage(DataMixin, CreateView):
@@ -71,9 +75,7 @@ class WomenCategory(DataMixin, ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Women.published.filter(cat__slug=self.kwargs["cat_slug"]).select_related(
-            "cat"
-        )
+        return Women.published.filter(cat__slug=self.kwargs["cat_slug"]).select_related("cat")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -110,27 +112,3 @@ class ShowPost(DataMixin, DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])
-
-
-def contact(request):
-    return HttpResponse("Контакты")
-
-
-def login(request):
-    return HttpResponse("Авторизация")
-
-
-# def show_category(request, cat_slug):
-#     category = get_object_or_404(Category, slug=cat_slug)
-#     posts = Women.published.filter(cat_id=category.pk).select_related("cat")
-#     data = {
-#         "title": f"Рубрика: {category.name}",
-#         # "menu": menu,
-#         "posts": posts,
-#         "cat_selected": category.pk,
-#     }
-#     return render(request, "women/index.html", data)
-
-
-def page_not_found(request, exception):
-    return HttpResponseNotFound("Страница не найдена")
