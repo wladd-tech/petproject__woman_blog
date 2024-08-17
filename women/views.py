@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 
+from .forms import AddPostForm
 from .models import Category, TagPost, Women
 
 menu = [
@@ -48,7 +49,21 @@ def show_post(request, post_slug):
 
 
 def addpage(request):
-    return HttpResponse("Добавление статьи")
+
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddPostForm()
+
+    data = {
+        'menu': menu, 
+        'title': 'Добавление статьи',
+        'form': form
+    }
+
+    return render(request, 'women/addpage.html', data)
 
 
 def contact(request):
