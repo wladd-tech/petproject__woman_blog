@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # My Apps
     'women.apps.WomenConfig',
+    'users.apps.UsersConfig',
     # Extensions
     "debug_toolbar",
     'django_extensions',
@@ -69,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # user context-processors
+                'users.context_processors.get_women_context',
             ],
         },
     },
