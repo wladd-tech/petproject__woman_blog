@@ -3,9 +3,6 @@ from django.utils.safestring import mark_safe
 from .models import Women, Husband, Category
 
 
-admin.site.register(Husband)
-
-
 class MarriedFilter(admin.SimpleListFilter):
     title = "Статус женщин"
     parameter_name = 'status'

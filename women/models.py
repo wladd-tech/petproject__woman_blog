@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 
 class PublishedManager(models.Manager):
@@ -18,6 +19,7 @@ class Women(models.Model):
     tags = models.ManyToManyField("TagPost", blank=True, related_name="tags", verbose_name="Теги")
     husband = models.OneToOneField("Husband", on_delete=models.SET_NULL, null=True, blank=True, related_name="woman", verbose_name="Текущий муж")
     photo = models.ImageField(upload_to="photos/%Y/%m/%d/", default=None, blank=True, null=True, verbose_name='Фото')
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='posts', null=True, default=None)
 
     objects = models.Manager()
     published = PublishedManager()
