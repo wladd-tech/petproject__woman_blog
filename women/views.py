@@ -6,10 +6,10 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView,)
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from .forms import AddPostForm, UploadFileForm
-from .models import Category, TagPost, UploadFiles, Women
+from .models import TagPost, UploadFiles, Women
 from .utils import DataMixin
 
 
@@ -40,10 +40,11 @@ def page_not_found(request, exception):
     return HttpResponseNotFound("Страница не найдена")
 
 
-class AddPage(LoginRequiredMixin, DataMixin, CreateView):
+class AddPage(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name = "women/addpage.html"
     title_page = "Добавление статьи"
+    permission_required = 'women.add_women'
 
     def form_valid(self, form):
        w = form.save(commit=False)
@@ -51,12 +52,13 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):
        return super().form_valid(form)
     
 
-class UpdatePage(LoginRequiredMixin, DataMixin, UpdateView):
+class UpdatePage(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, UpdateView):
     model = Women
     fields = ["title", "content", "photo", "is_published", "cat"]
     template_name = "women/addpage.html"
     success_url = reverse_lazy("home")
     title_page = "Редактирование статьи"
+    permission_required = 'women.change_women'
 
 
 class DeletePage(LoginRequiredMixin, DeleteView):
