@@ -1,6 +1,6 @@
 <h1 align="center">Мини-блог про знаменитых женщин</h1>
 
-![SDOjP.gif](https://s10.gifyu.com/images/SDOjP.gif)
+![demo-gif.gif](https://github.com/wladd-tech/petproject__woman_blog/blob/dev/demo-gif.gif)
 
 # 💻 Используемые технологии:
 
