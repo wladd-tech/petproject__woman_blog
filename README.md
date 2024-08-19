@@ -1,6 +1,6 @@
 <h1 align="center">Мини-блог про знаменитых женщин</h1>
 
-[![SDOjP.gif](https://s10.gifyu.com/images/SDOjP.gif)](https://gifyu.com/image/SDOjP)
+![SDOjP.gif](https://s10.gifyu.com/images/SDOjP.gif)(https://gifyu.com/image/SDOjP)
 
 # 💻 Используемые технологии:
 
